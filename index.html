@@ -1932,6 +1932,41 @@
           </div>
         </div>
       </section>
+
+      <section class="public-section" id="suggestion">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-title">
+              <h2>ما لقيت طلبك؟</h2>
+              <p>اكتب اقتراح أو منتج تحتاجه، ويوصلنا مباشرة.</p>
+            </div>
+          </div>
+
+          <div class="order-layout">
+            <form class="card" id="suggestionForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="suggestionName">اسمك اختياري</label>
+                  <input id="suggestionName" type="text" placeholder="مثال: أبو علي" />
+                </div>
+
+                <div class="field">
+                  <label for="suggestionPhone">رقمك اختياري</label>
+                  <input id="suggestionPhone" type="tel" placeholder="اختياري: 07xxxxxxxxx" />
+                </div>
+
+                <div class="field full">
+                  <label for="suggestionText">اكتب المنتج أو الملاحظة</label>
+                  <textarea id="suggestionText" placeholder="مثال: أريدون توفرون نوع معين / المنتج الفلاني غير موجود..." required></textarea>
+                </div>
+              </div>
+
+              <button class="main-btn" id="sendSuggestionBtn" type="submit">إرسال اقتراح للمتجر</button>
+              <div class="alert" id="suggestionAlert"></div>
+            </form>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="public-footer">
@@ -2819,6 +2854,7 @@
       const cartOverlay = document.getElementById("cartOverlay");
       const checkoutBtn = document.getElementById("checkoutBtn");
       const orderForm = document.getElementById("orderForm");
+      const suggestionForm = document.getElementById("suggestionForm");
 
       searchInput.addEventListener("input", () => {
         const keyword = searchInput.value.trim().toLowerCase();
@@ -2845,6 +2881,7 @@
       });
 
       orderForm.addEventListener("submit", sendOrder);
+      if (suggestionForm) suggestionForm.addEventListener("submit", sendSuggestion);
     }
 
 
@@ -3028,7 +3065,44 @@
       document.getElementById("cartOverlay").classList.remove("active");
     }
 
+    function generateReceiptCode(prefix = "HSN") {
+      const now = new Date();
+
+      const datePart =
+        now.getFullYear().toString() +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        String(now.getDate()).padStart(2, "0");
+
+      const timePart =
+        String(now.getHours()).padStart(2, "0") +
+        String(now.getMinutes()).padStart(2, "0") +
+        String(now.getSeconds()).padStart(2, "0");
+
+      const randomPart = Math.floor(1000 + Math.random() * 9000);
+
+      return `${prefix}-${datePart}-${timePart}-${randomPart}`;
+    }
+
+    function getReceiptDateTime() {
+      const now = new Date();
+
+      return {
+        date: now.toLocaleDateString("ar-IQ", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }),
+        time: now.toLocaleTimeString("ar-IQ", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+    }
+
     function buildTelegramMessage(customer) {
+      const receiptCode = generateReceiptCode("HSN");
+      const receiptDateTime = getReceiptDateTime();
+
       const itemsText = cart.map((item, index) => {
         return `${index + 1}) ${item.name}
    الكمية: ${item.quantity}
@@ -3038,6 +3112,10 @@
 
       return `
 🛒 طلب جديد من الموقع
+
+🧾 رمز الوصل: ${receiptCode}
+📅 تاريخ الوصل: ${receiptDateTime.date}
+⏰ وقت الوصل: ${receiptDateTime.time}
 
 👤 الاسم: ${customer.name || "غير مذكور"}
 📞 الرقم: ${customer.phone || "غير مذكور"}
@@ -3072,6 +3150,64 @@ ${customer.notes || "لا توجد ملاحظات"}
       }
 
       return data;
+    }
+
+    function buildSuggestionMessage(data) {
+      const receiptCode = generateReceiptCode("SUG");
+      const receiptDateTime = getReceiptDateTime();
+
+      return `
+💡 اقتراح من الزبون
+
+🧾 رمز الاقتراح: ${receiptCode}
+📅 التاريخ: ${receiptDateTime.date}
+⏰ الوقت: ${receiptDateTime.time}
+
+👤 الاسم: ${data.name || "غير مذكور"}
+📞 الرقم: ${data.phone || "غير مذكور"}
+
+📝 الاقتراح / الملاحظة:
+${data.text}
+      `.trim();
+    }
+
+    async function sendSuggestion(event) {
+      event.preventDefault();
+
+      const suggestionAlert = document.getElementById("suggestionAlert");
+      const sendSuggestionBtn = document.getElementById("sendSuggestionBtn");
+
+      if (TELEGRAM_BOT_TOKEN === "PUT_YOUR_BOT_TOKEN_HERE" || TELEGRAM_CHAT_ID === "PUT_YOUR_CHAT_ID_HERE") {
+        showAlert(suggestionAlert, "يجب وضع BOT_TOKEN و CHAT_ID داخل الكود قبل الإرسال.", "error");
+        return;
+      }
+
+      const data = {
+        name: document.getElementById("suggestionName").value.trim(),
+        phone: document.getElementById("suggestionPhone").value.trim(),
+        text: document.getElementById("suggestionText").value.trim()
+      };
+
+      if (!data.text) {
+        showAlert(suggestionAlert, "اكتب الاقتراح أو المنتج المطلوب.", "error");
+        return;
+      }
+
+      try {
+        sendSuggestionBtn.disabled = true;
+        sendSuggestionBtn.textContent = "جاري إرسال الاقتراح...";
+
+        await sendToTelegram(buildSuggestionMessage(data));
+
+        showAlert(suggestionAlert, "تم إرسال اقتراحك للمتجر. شكراً إلك.", "success");
+        event.target.reset();
+      } catch (error) {
+        console.error(error);
+        showAlert(suggestionAlert, "حدث خطأ أثناء إرسال الاقتراح.", "error");
+      } finally {
+        sendSuggestionBtn.disabled = false;
+        sendSuggestionBtn.textContent = "إرسال اقتراح للمتجر";
+      }
     }
 
     async function sendOrder(event) {
