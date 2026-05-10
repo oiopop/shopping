@@ -121,6 +121,18 @@
     }
 
 
+
+    .store-logo-preview {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      object-fit: cover;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      display: none;
+    }
+
+
     /* Admin Sidebar */
     .sidebar {
       width: 280px;
@@ -964,7 +976,8 @@
       </div>
 
       <nav>
-        <button class="nav-btn active" type="button" onclick="scrollToAdminSection('productsAdmin')">📦 المنتجات</button>
+        <button class="nav-btn active" type="button" onclick="scrollToAdminSection('storeInfoAdmin')">🏪 معلومات المتجر</button>
+        <button class="nav-btn" type="button" onclick="scrollToAdminSection('productsAdmin')">📦 المنتجات</button>
         <button class="nav-btn" type="button" onclick="scrollToAdminSection('storePreview')">👁️ معاينة المتجر</button>
         <button class="nav-btn" type="button" onclick="scrollToAdminSection('telegramSettings')">🤖 تيليجرام</button>
       </nav>
@@ -989,6 +1002,49 @@
       </header>
 
       <div class="admin-content">
+
+        <section id="storeInfoAdmin" class="card" style="margin-bottom: 18px;">
+          <div class="card-head">
+            <div>
+              <h3>معلومات المتجر الأساسية</h3>
+              <p>هذه المعلومات تظهر للزبائن في واجهة المتجر وتُحفظ في Firebase.</p>
+            </div>
+            <img id="storeLogoPreview" class="store-logo-preview" alt="Store Logo Preview" />
+          </div>
+
+          <form id="storeInfoForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="storeNameInput">اسم المتجر</label>
+                <input id="storeNameInput" type="text" placeholder="مثال: متجر المدينة" required />
+              </div>
+
+              <div class="field">
+                <label for="storePhoneInput">رقم الهاتف</label>
+                <input id="storePhoneInput" type="tel" placeholder="مثال: 07xxxxxxxxx" />
+              </div>
+
+              <div class="field full">
+                <label for="storeLocationInput">موقع / عنوان المتجر</label>
+                <input id="storeLocationInput" type="text" placeholder="مثال: بغداد - المنصور - قرب..." />
+              </div>
+
+              <div class="field full">
+                <label for="storeDescriptionInput">وصف قصير للمتجر</label>
+                <textarea id="storeDescriptionInput" placeholder="اكتب وصفاً قصيراً يظهر في صفحة الزبون..."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="storeLogoInput">شعار / صورة المتجر اختيارياً</label>
+                <input id="storeLogoInput" type="file" accept="image/*" />
+              </div>
+            </div>
+
+            <button class="main-btn" type="submit">حفظ معلومات المتجر</button>
+            <div class="alert" id="storeInfoAlert"></div>
+          </form>
+        </section>
+
         <section id="productsAdmin" class="grid admin-grid">
           <div class="card">
             <div class="card-head">
@@ -1091,8 +1147,8 @@
     <header class="public-header">
       <div class="container public-nav">
         <a href="#products" class="public-brand">
-          <span class="public-logo">🛒</span>
-          <span>Modern Store</span>
+          <span class="public-logo" id="publicStoreLogo">🛒</span>
+          <span id="publicStoreNameNav">Modern Store</span>
         </a>
 
         <button class="cart-open-btn" id="openCartBtn" type="button">
@@ -1108,14 +1164,21 @@
         <div class="container">
           <div class="section-head">
             <div class="section-title">
-              <h1>منتجاتنا</h1>
-              <p>اختر الكمية وأضف المنتجات إلى السلة.</p>
+              <h1 id="publicStoreNameTitle">منتجاتنا</h1>
+              <p id="publicStoreDescription">اختر الكمية وأضف المنتجات إلى السلة.</p>
             </div>
 
             <label class="search-box">
               <span>🔎</span>
               <input id="searchInput" type="search" placeholder="ابحث عن منتج..." />
             </label>
+          </div>
+
+          <div class="card" id="publicStoreInfoCard" style="margin-bottom: 18px;">
+            <div style="display: grid; gap: 8px;">
+              <strong id="publicStoreLocation">📍 موقع المتجر: غير محدد</strong>
+              <span id="publicStorePhone" style="color: var(--muted); font-weight: 800;">☎️ الهاتف: غير محدد</span>
+            </div>
           </div>
 
           <div class="products-grid" id="productsGrid"></div>
@@ -1218,6 +1281,8 @@
     try { getAnalytics(app); } catch (error) { console.warn("Analytics skipped", error); }
     const db = getFirestore(app);
     const PRODUCTS_COLLECTION = "products";
+    const STORE_SETTINGS_COLLECTION = "settings";
+    const STORE_SETTINGS_DOC = "storeInfo";
 
     /*
       ================================
@@ -1225,8 +1290,8 @@
       ================================
       ضع بيانات البوت هنا:
     */
-    const TELEGRAM_BOT_TOKEN = "PUT_YOUR_BOT_TOKEN_HERE";
-    const TELEGRAM_CHAT_ID = "PUT_YOUR_CHAT_ID_HERE";
+    const TELEGRAM_BOT_TOKEN = "8375337032:AAHnjB5u-bBOBSVlYj41IQAL6Y67SRFZHjk";
+    const TELEGRAM_CHAT_ID = "-1003869897908";
 
     /*
       ================================
@@ -1236,8 +1301,19 @@
       LocalStorage موجود فقط كنسخة احتياطية إذا فشل الاتصال.
     */
     const PRODUCTS_STORAGE_KEY = "modern_shop_products_same_file_v1";
+    const STORE_INFO_STORAGE_KEY = "modern_shop_store_info_v1";
     const ADMIN_PASSWORD = "123456"; // غيّر كلمة مرور المدير من هنا
     const ADMIN_SESSION_KEY = "modern_shop_admin_logged_in_v1";
+
+    const defaultStoreInfo = {
+      name: "Modern Store",
+      location: "غير محدد",
+      phone: "غير محدد",
+      description: "اختر الكمية وأضف المنتجات إلى السلة.",
+      logo: ""
+    };
+
+    let storeInfo = loadStoreInfo();
 
     const defaultProducts = [
       {
@@ -1285,6 +1361,7 @@
 
     function bootApp() {
       startProductsSync();
+      startStoreInfoSync();
 
       if (isPublicMode()) {
         document.getElementById("publicApp").classList.remove("hidden");
@@ -1360,6 +1437,91 @@
     function saveProducts() {
       localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
     }
+
+    function loadStoreInfo() {
+      const saved = localStorage.getItem(STORE_INFO_STORAGE_KEY);
+      if (!saved) return { ...defaultStoreInfo };
+
+      try {
+        return { ...defaultStoreInfo, ...JSON.parse(saved) };
+      } catch {
+        return { ...defaultStoreInfo };
+      }
+    }
+
+    function saveStoreInfoLocal() {
+      localStorage.setItem(STORE_INFO_STORAGE_KEY, JSON.stringify(storeInfo));
+    }
+
+    async function saveStoreInfoToFirebase() {
+      await setDoc(doc(db, STORE_SETTINGS_COLLECTION, STORE_SETTINGS_DOC), storeInfo);
+    }
+
+    function startStoreInfoSync() {
+      onSnapshot(
+        doc(db, STORE_SETTINGS_COLLECTION, STORE_SETTINGS_DOC),
+        async (snapshot) => {
+          if (!snapshot.exists()) {
+            await setDoc(doc(db, STORE_SETTINGS_COLLECTION, STORE_SETTINGS_DOC), defaultStoreInfo);
+            return;
+          }
+
+          storeInfo = { ...defaultStoreInfo, ...snapshot.data() };
+          saveStoreInfoLocal();
+
+          if (isPublicMode()) {
+            renderStoreInfoPublic();
+          } else {
+            fillStoreInfoForm();
+            renderPreview();
+          }
+        },
+        (error) => {
+          console.error("Firebase store info sync error:", error);
+          if (isPublicMode()) renderStoreInfoPublic();
+          else fillStoreInfoForm();
+        }
+      );
+    }
+
+    function fillStoreInfoForm() {
+      const name = document.getElementById("storeNameInput");
+      if (!name) return;
+
+      document.getElementById("storeNameInput").value = storeInfo.name || "";
+      document.getElementById("storePhoneInput").value = storeInfo.phone || "";
+      document.getElementById("storeLocationInput").value = storeInfo.location || "";
+      document.getElementById("storeDescriptionInput").value = storeInfo.description || "";
+
+      const preview = document.getElementById("storeLogoPreview");
+      if (preview && storeInfo.logo) {
+        preview.src = storeInfo.logo;
+        preview.style.display = "block";
+      } else if (preview) {
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+      }
+    }
+
+    function renderStoreInfoPublic() {
+      const nav = document.getElementById("publicStoreNameNav");
+      if (!nav) return;
+
+      document.title = storeInfo.name || "Modern Store";
+      nav.textContent = storeInfo.name || "Modern Store";
+      document.getElementById("publicStoreNameTitle").textContent = storeInfo.name || "منتجاتنا";
+      document.getElementById("publicStoreDescription").textContent = storeInfo.description || "اختر الكمية وأضف المنتجات إلى السلة.";
+      document.getElementById("publicStoreLocation").textContent = "📍 موقع المتجر: " + (storeInfo.location || "غير محدد");
+      document.getElementById("publicStorePhone").textContent = "☎️ الهاتف: " + (storeInfo.phone || "غير محدد");
+
+      const logo = document.getElementById("publicStoreLogo");
+      if (storeInfo.logo) {
+        logo.innerHTML = `<img src="${storeInfo.logo}" alt="Store Logo" style="width:100%;height:100%;object-fit:cover;border-radius:15px;">`;
+      } else {
+        logo.textContent = "🛒";
+      }
+    }
+
 
     async function seedDefaultProductsIfEmpty() {
       const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
@@ -1476,6 +1638,46 @@
     function bootAdminDashboard() {
       const productForm = document.getElementById("productForm");
       const productAlert = document.getElementById("productAlert");
+      const storeInfoForm = document.getElementById("storeInfoForm");
+      const storeInfoAlert = document.getElementById("storeInfoAlert");
+
+      fillStoreInfoForm();
+
+      if (storeInfoForm && storeInfoForm.dataset.bound !== "true") {
+        storeInfoForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          try {
+            const logoFile = document.getElementById("storeLogoInput").files[0];
+            let logo = storeInfo.logo || "";
+
+            if (logoFile) {
+              logo = await fileToBase64(logoFile);
+            }
+
+            storeInfo = {
+              name: document.getElementById("storeNameInput").value.trim() || "Modern Store",
+              phone: document.getElementById("storePhoneInput").value.trim() || "غير محدد",
+              location: document.getElementById("storeLocationInput").value.trim() || "غير محدد",
+              description: document.getElementById("storeDescriptionInput").value.trim() || "اختر الكمية وأضف المنتجات إلى السلة.",
+              logo
+            };
+
+            saveStoreInfoLocal();
+            await saveStoreInfoToFirebase();
+
+            document.getElementById("storeLogoInput").value = "";
+            fillStoreInfoForm();
+            renderPreview();
+            showAlert(storeInfoAlert, "تم حفظ معلومات المتجر في Firebase.", "success");
+          } catch (error) {
+            console.error(error);
+            showAlert(storeInfoAlert, "حدث خطأ أثناء حفظ معلومات المتجر.", "error");
+          }
+        });
+
+        storeInfoForm.dataset.bound = "true";
+      }
 
       if (productForm.dataset.bound === "true") {
         renderAdminProducts();
@@ -1597,6 +1799,7 @@
 
     /* Public Store */
     function bootPublicStore() {
+      renderStoreInfoPublic();
       renderProducts();
       renderCart();
 
