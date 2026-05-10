@@ -557,6 +557,43 @@
       background: transparent;
     }
 
+
+    .category-filter-btn {
+      min-height: 42px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 950;
+      transition: 0.2s ease;
+    }
+
+    .category-filter-btn:hover,
+    .category-filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .admin-category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      flex-wrap: wrap;
+    }
+
+    .admin-category-item strong {
+      font-size: 1rem;
+    }
+
+
     .products-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -888,7 +925,44 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .products-grid {
+  
+    .category-filter-btn {
+      min-height: 42px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 950;
+      transition: 0.2s ease;
+    }
+
+    .category-filter-btn:hover,
+    .category-filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .admin-category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      flex-wrap: wrap;
+    }
+
+    .admin-category-item strong {
+      font-size: 1rem;
+    }
+
+
+    .products-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
@@ -902,13 +976,87 @@
         grid-template-columns: 0.95fr 1.05fr;
       }
 
-      .products-grid {
+  
+    .category-filter-btn {
+      min-height: 42px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 950;
+      transition: 0.2s ease;
+    }
+
+    .category-filter-btn:hover,
+    .category-filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .admin-category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      flex-wrap: wrap;
+    }
+
+    .admin-category-item strong {
+      font-size: 1rem;
+    }
+
+
+    .products-grid {
         grid-template-columns: repeat(3, 1fr);
       }
     }
 
     @media (min-width: 1180px) {
-      .products-grid {
+  
+    .category-filter-btn {
+      min-height: 42px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 950;
+      transition: 0.2s ease;
+    }
+
+    .category-filter-btn:hover,
+    .category-filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .admin-category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      flex-wrap: wrap;
+    }
+
+    .admin-category-item strong {
+      font-size: 1rem;
+    }
+
+
+    .products-grid {
         grid-template-columns: repeat(4, 1fr);
       }
     }
@@ -977,6 +1125,7 @@
 
       <nav>
         <button class="nav-btn active" type="button" onclick="scrollToAdminSection('storeInfoAdmin')">🏪 معلومات المتجر</button>
+        <button class="nav-btn" type="button" onclick="scrollToAdminSection('categoriesAdmin')">🗂️ الأقسام</button>
         <button class="nav-btn" type="button" onclick="scrollToAdminSection('productsAdmin')">📦 المنتجات</button>
         <button class="nav-btn" type="button" onclick="scrollToAdminSection('storePreview')">👁️ معاينة المتجر</button>
         <button class="nav-btn" type="button" onclick="scrollToAdminSection('telegramSettings')">🤖 تيليجرام</button>
@@ -1045,6 +1194,44 @@
           </form>
         </section>
 
+
+        <section id="categoriesAdmin" class="card" style="margin-bottom: 18px;">
+          <div class="card-head">
+            <div>
+              <h3>إدارة الأقسام</h3>
+              <p>أضف أقسام للمتجر مثل: مشروبات، كوزمتك، ملابس، إلكترونيات.</p>
+            </div>
+          </div>
+
+          <form id="categoryForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="categoryNameInput">اسم القسم</label>
+                <input id="categoryNameInput" type="text" placeholder="مثال: المشروبات" required />
+              </div>
+
+              <div class="field">
+                <label for="categoryIconInput">رمز القسم اختياري</label>
+                <input id="categoryIconInput" type="text" placeholder="مثال: 🥤 أو 💄" maxlength="4" />
+              </div>
+            </div>
+
+            <button class="main-btn" type="submit">إضافة القسم</button>
+            <div class="alert" id="categoryAlert"></div>
+          </form>
+
+          <div style="margin-top: 18px;">
+            <div class="card-head" style="margin-bottom: 12px;">
+              <div>
+                <h3 style="font-size: 1.05rem;">الأقسام الحالية</h3>
+                <p>تظهر هذه الأقسام كفلتر في واجهة الزبون.</p>
+              </div>
+            </div>
+
+            <div class="products-admin-list" id="adminCategoriesList"></div>
+          </div>
+        </section>
+
         <section id="productsAdmin" class="grid admin-grid">
           <div class="card">
             <div class="card-head">
@@ -1069,6 +1256,11 @@
                 <div class="field">
                   <label for="productTag">الوسم</label>
                   <input id="productTag" type="text" placeholder="مثال: جديد / عرض خاص" />
+                </div>
+
+                <div class="field">
+                  <label for="productCategory">قسم المنتج</label>
+                  <select id="productCategory" required style="width:100%;border:1px solid var(--border);border-radius:16px;padding:13px 14px;background:#fff;color:var(--text);outline:none;"></select>
                 </div>
 
                 <div class="field">
@@ -1181,6 +1373,8 @@
             </div>
           </div>
 
+          <div id="categoryFilters" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;"></div>
+
           <div class="products-grid" id="productsGrid"></div>
         </div>
       </section>
@@ -1281,6 +1475,7 @@
     try { getAnalytics(app); } catch (error) { console.warn("Analytics skipped", error); }
     const db = getFirestore(app);
     const PRODUCTS_COLLECTION = "products";
+    const CATEGORIES_COLLECTION = "categories";
     const STORE_SETTINGS_COLLECTION = "settings";
     const STORE_SETTINGS_DOC = "storeInfo";
 
@@ -1301,6 +1496,7 @@
       LocalStorage موجود فقط كنسخة احتياطية إذا فشل الاتصال.
     */
     const PRODUCTS_STORAGE_KEY = "modern_shop_products_same_file_v1";
+    const CATEGORIES_STORAGE_KEY = "modern_shop_categories_v1";
     const STORE_INFO_STORAGE_KEY = "modern_shop_store_info_v1";
     const ADMIN_PASSWORD = "123456"; // غيّر كلمة مرور المدير من هنا
     const ADMIN_SESSION_KEY = "modern_shop_admin_logged_in_v1";
@@ -1315,6 +1511,12 @@
 
     let storeInfo = loadStoreInfo();
 
+    const defaultCategories = [
+      { id: "general", name: "عام", icon: "🛒" },
+      { id: "drinks", name: "المشروبات", icon: "🥤" },
+      { id: "cosmetics", name: "الكوزمتك", icon: "💄" }
+    ];
+
     const defaultProducts = [
       {
         id: 1,
@@ -1322,7 +1524,8 @@
         price: 35000,
         desc: "سماعات Bluetooth بصوت نقي وبطارية طويلة.",
         tag: "الأكثر طلباً",
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80",
+        categoryId: "general"
       },
       {
         id: 2,
@@ -1330,7 +1533,8 @@
         price: 55000,
         desc: "ساعة عملية لمتابعة النشاط والإشعارات اليومية.",
         tag: "جديد",
-        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80",
+        categoryId: "general"
       },
       {
         id: 3,
@@ -1338,7 +1542,8 @@
         price: 28000,
         desc: "حقيبة متينة مناسبة للدراسة والعمل والسفر.",
         tag: "عرض خاص",
-        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
+        categoryId: "general"
       },
       {
         id: 4,
@@ -1346,11 +1551,14 @@
         price: 72000,
         desc: "كيبورد مريح للكتابة والألعاب بإضاءة جميلة.",
         tag: "Gaming",
-        image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=80",
+        categoryId: "general"
       }
     ];
 
     let products = loadProducts();
+    let categories = loadCategories();
+    let activeCategoryId = "all";
     let cart = [];
     let selectedQuantities = {};
     let firebaseProductsLoaded = false;
@@ -1361,6 +1569,7 @@
 
     function bootApp() {
       startProductsSync();
+      startCategoriesSync();
       startStoreInfoSync();
 
       if (isPublicMode()) {
@@ -1428,7 +1637,7 @@
 
       try {
         const parsed = JSON.parse(saved);
-        return Array.isArray(parsed) ? parsed : [...defaultProducts];
+        return Array.isArray(parsed) ? parsed.map(product => ({ categoryId: "general", ...product })) : [...defaultProducts];
       } catch {
         return [...defaultProducts];
       }
@@ -1437,6 +1646,87 @@
     function saveProducts() {
       localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
     }
+
+    function loadCategories() {
+      const saved = localStorage.getItem(CATEGORIES_STORAGE_KEY);
+      if (!saved) return [...defaultCategories];
+
+      try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : [...defaultCategories];
+      } catch {
+        return [...defaultCategories];
+      }
+    }
+
+    function saveCategoriesLocal() {
+      localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    }
+
+    async function seedDefaultCategoriesIfEmpty() {
+      const snapshot = await getDocs(collection(db, CATEGORIES_COLLECTION));
+      if (!snapshot.empty) return;
+
+      await Promise.all(defaultCategories.map(category => {
+        return setDoc(doc(db, CATEGORIES_COLLECTION, String(category.id)), category);
+      }));
+    }
+
+    function startCategoriesSync() {
+      onSnapshot(
+        collection(db, CATEGORIES_COLLECTION),
+        async (snapshot) => {
+          if (snapshot.empty) {
+            await seedDefaultCategoriesIfEmpty();
+            return;
+          }
+
+          categories = snapshot.docs
+            .map(item => ({ id: item.id, ...item.data() }))
+            .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ar"));
+
+          saveCategoriesLocal();
+
+          if (isPublicMode()) {
+            renderCategoryFilters();
+            renderProducts();
+          } else {
+            renderAdminCategories();
+            renderCategoryOptions();
+            renderAdminProducts();
+            renderPreview();
+          }
+        },
+        (error) => {
+          console.error("Firebase categories sync error:", error);
+          if (isPublicMode()) {
+            renderCategoryFilters();
+            renderProducts();
+          } else {
+            renderAdminCategories();
+            renderCategoryOptions();
+          }
+        }
+      );
+    }
+
+    async function saveCategoryToFirebase(category) {
+      await setDoc(doc(db, CATEGORIES_COLLECTION, String(category.id)), category);
+    }
+
+    async function deleteCategoryFromFirebase(categoryId) {
+      await deleteDoc(doc(db, CATEGORIES_COLLECTION, String(categoryId)));
+    }
+
+    function getCategoryName(categoryId) {
+      const category = categories.find(item => String(item.id) === String(categoryId));
+      return category ? `${category.icon || "🗂️"} ${category.name}` : "🛒 عام";
+    }
+
+    function makeCategoryId(name) {
+      return "cat_" + Date.now().toString(36) + "_" + String(name || "").trim().replace(/\s+/g, "_").slice(0, 20);
+    }
+
 
     function loadStoreInfo() {
       const saved = localStorage.getItem(STORE_INFO_STORAGE_KEY);
@@ -1542,7 +1832,7 @@
           }
 
           products = snapshot.docs
-            .map(item => ({ id: Number(item.id) || item.id, ...item.data() }))
+            .map(item => ({ categoryId: "general", id: Number(item.id) || item.id, ...item.data() }))
             .sort((a, b) => Number(b.id) - Number(a.id));
 
           firebaseProductsLoaded = true;
@@ -1679,6 +1969,57 @@
         storeInfoForm.dataset.bound = "true";
       }
 
+
+      const categoryForm = document.getElementById("categoryForm");
+      const categoryAlert = document.getElementById("categoryAlert");
+
+      renderAdminCategories();
+      renderCategoryOptions();
+
+      if (categoryForm && categoryForm.dataset.bound !== "true") {
+        categoryForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const name = document.getElementById("categoryNameInput").value.trim();
+          const icon = document.getElementById("categoryIconInput").value.trim() || "🗂️";
+
+          if (!name) {
+            showAlert(categoryAlert, "اكتب اسم القسم.", "error");
+            return;
+          }
+
+          const exists = categories.some(item => item.name.trim().toLowerCase() === name.toLowerCase());
+          if (exists) {
+            showAlert(categoryAlert, "هذا القسم موجود مسبقاً.", "error");
+            return;
+          }
+
+          const category = {
+            id: makeCategoryId(name),
+            name,
+            icon
+          };
+
+          try {
+            categories.push(category);
+            saveCategoriesLocal();
+            await saveCategoryToFirebase(category);
+
+            categoryForm.reset();
+            renderAdminCategories();
+            renderCategoryOptions();
+            renderPreview();
+
+            showAlert(categoryAlert, "تمت إضافة القسم بنجاح.", "success");
+          } catch (error) {
+            console.error(error);
+            showAlert(categoryAlert, "حدث خطأ أثناء حفظ القسم.", "error");
+          }
+        });
+
+        categoryForm.dataset.bound = "true";
+      }
+
       if (productForm.dataset.bound === "true") {
         renderAdminProducts();
         renderPreview();
@@ -1704,6 +2045,7 @@
             price: Number(document.getElementById("productPrice").value),
             desc: document.getElementById("productDesc").value.trim(),
             tag: document.getElementById("productTag").value.trim() || "منتج",
+            categoryId: document.getElementById("productCategory").value || "general",
             image: imageBase64
           };
 
@@ -1728,6 +2070,71 @@
       renderPreview();
     }
 
+
+    function renderCategoryOptions() {
+      const select = document.getElementById("productCategory");
+      if (!select) return;
+
+      if (!categories.length) {
+        categories = [...defaultCategories];
+        saveCategoriesLocal();
+      }
+
+      select.innerHTML = categories.map(category => `
+        <option value="${escapeHtml(category.id)}">${escapeHtml(category.icon || "🗂️")} ${escapeHtml(category.name)}</option>
+      `).join("");
+    }
+
+    function renderAdminCategories() {
+      const list = document.getElementById("adminCategoriesList");
+      if (!list) return;
+
+      if (!categories.length) {
+        list.innerHTML = `<div class="empty-box">لا توجد أقسام حالياً.</div>`;
+        return;
+      }
+
+      list.innerHTML = categories.map(category => `
+        <div class="admin-category-item">
+          <strong>${escapeHtml(category.icon || "🗂️")} ${escapeHtml(category.name)}</strong>
+          <button class="btn btn-danger" type="button" onclick="deleteCategory('${escapeHtml(category.id)}')">حذف</button>
+        </div>
+      `).join("");
+    }
+
+    async function deleteCategory(categoryId) {
+      if (categoryId === "general") {
+        alert("لا يمكن حذف قسم عام.");
+        return;
+      }
+
+      if (!confirm("هل تريد حذف هذا القسم؟ المنتجات التابعة له ستتحول إلى قسم عام.")) return;
+
+      try {
+        categories = categories.filter(category => String(category.id) !== String(categoryId));
+        products = products.map(product => {
+          if (String(product.categoryId || "general") === String(categoryId)) {
+            return { ...product, categoryId: "general" };
+          }
+          return product;
+        });
+
+        saveCategoriesLocal();
+        saveProducts();
+
+        await deleteCategoryFromFirebase(categoryId);
+        await Promise.all(products.map(product => saveProductToFirebase(product)));
+
+        renderAdminCategories();
+        renderCategoryOptions();
+        renderAdminProducts();
+        renderPreview();
+      } catch (error) {
+        console.error(error);
+        alert("حدث خطأ أثناء حذف القسم.");
+      }
+    }
+
     function renderAdminProducts() {
       const list = document.getElementById("adminProductsList");
       if (!list) return;
@@ -1743,6 +2150,7 @@
           <div class="admin-product-info">
             <h4>${escapeHtml(product.name)}</h4>
             <p>${escapeHtml(product.desc)}</p>
+            <p><strong>القسم:</strong> ${escapeHtml(getCategoryName(product.categoryId || "general"))}</p>
             <div class="admin-product-bottom">
               <strong class="price">${formatPrice(product.price)}</strong>
               <button class="btn btn-danger" type="button" onclick="deleteProduct(${product.id})">حذف</button>
@@ -1800,6 +2208,7 @@
     /* Public Store */
     function bootPublicStore() {
       renderStoreInfoPublic();
+      renderCategoryFilters();
       renderProducts();
       renderCart();
 
@@ -1813,10 +2222,13 @@
       searchInput.addEventListener("input", () => {
         const keyword = searchInput.value.trim().toLowerCase();
 
-        const filtered = products.filter(product =>
+        const baseProducts = getVisibleProducts();
+
+        const filtered = baseProducts.filter(product =>
           product.name.toLowerCase().includes(keyword) ||
           product.desc.toLowerCase().includes(keyword) ||
-          String(product.tag || "").toLowerCase().includes(keyword)
+          String(product.tag || "").toLowerCase().includes(keyword) ||
+          getCategoryName(product.categoryId || "general").toLowerCase().includes(keyword)
         );
 
         renderProducts(filtered);
@@ -1834,7 +2246,39 @@
       orderForm.addEventListener("submit", sendOrder);
     }
 
-    function renderProducts(list = products) {
+
+    function renderCategoryFilters() {
+      const box = document.getElementById("categoryFilters");
+      if (!box) return;
+
+      const buttons = [
+        { id: "all", name: "كل المنتجات", icon: "🛍️" },
+        ...categories
+      ];
+
+      box.innerHTML = buttons.map(category => `
+        <button
+          class="category-filter-btn ${String(activeCategoryId) === String(category.id) ? "active" : ""}"
+          type="button"
+          onclick="setActiveCategory('${escapeHtml(category.id)}')"
+        >
+          ${escapeHtml(category.icon || "🗂️")} ${escapeHtml(category.name)}
+        </button>
+      `).join("");
+    }
+
+    function setActiveCategory(categoryId) {
+      activeCategoryId = categoryId || "all";
+      renderCategoryFilters();
+      renderProducts();
+    }
+
+    function getVisibleProducts() {
+      if (activeCategoryId === "all") return products;
+      return products.filter(product => String(product.categoryId || "general") === String(activeCategoryId));
+    }
+
+    function renderProducts(list = getVisibleProducts()) {
       const grid = document.getElementById("productsGrid");
       if (!grid) return;
 
@@ -2084,6 +2528,8 @@ ${customer.notes || "لا توجد ملاحظات"}
       addToCart,
       changeCartQty,
       removeFromCart,
+      setActiveCategory,
+      deleteCategory,
       adminLogout
     });
 
