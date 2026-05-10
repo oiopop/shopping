@@ -199,6 +199,42 @@
       transform: translateX(-2px);
     }
 
+
+    .admin-menu-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--text);
+      color: #fff;
+      font-size: 1.25rem;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .admin-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 80;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.22s ease;
+    }
+
+    .admin-drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .admin-section {
+      display: none;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+
+
     .admin-main {
       flex: 1;
       min-width: 0;
@@ -967,7 +1003,35 @@
       }
     }
 
+
+    @media (max-width: 959px) {
+      .sidebar {
+        display: flex;
+        position: fixed;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        width: min(86vw, 310px);
+        z-index: 100;
+        transform: translateX(105%);
+        transition: 0.28s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+    }
+
+
     @media (min-width: 960px) {
+      .admin-menu-toggle {
+        display: none;
+      }
+
+      .admin-drawer-overlay {
+        display: none;
+      }
+
       .sidebar {
         display: flex;
       }
@@ -1116,7 +1180,8 @@
 
   <!-- Admin Area: يظهر عند فتح الملف طبيعي بدون ?public=1 -->
   <div id="adminApp" class="app-shell hidden">
-    <aside class="sidebar">
+    <div id="adminDrawerOverlay" class="admin-drawer-overlay" onclick="closeAdminMenu()"></div>
+    <aside class="sidebar" id="adminSidebar">
       <div class="brand">
         <div class="brand-icon">🛒</div>
         <h1>لوحة إدارة المتجر</h1>
@@ -1124,11 +1189,11 @@
       </div>
 
       <nav>
-        <button class="nav-btn active" type="button" onclick="scrollToAdminSection('storeInfoAdmin')">🏪 معلومات المتجر</button>
-        <button class="nav-btn" type="button" onclick="scrollToAdminSection('categoriesAdmin')">🗂️ الأقسام</button>
-        <button class="nav-btn" type="button" onclick="scrollToAdminSection('productsAdmin')">📦 المنتجات</button>
-        <button class="nav-btn" type="button" onclick="scrollToAdminSection('storePreview')">👁️ معاينة المتجر</button>
-        <button class="nav-btn" type="button" onclick="scrollToAdminSection('telegramSettings')">🤖 تيليجرام</button>
+        <button class="nav-btn active" data-section="storeInfoAdmin" type="button" onclick="showAdminSection('storeInfoAdmin')">🏪 معلومات المتجر</button>
+        <button class="nav-btn" data-section="categoriesAdmin" type="button" onclick="showAdminSection('categoriesAdmin')">🗂️ الأقسام</button>
+        <button class="nav-btn" data-section="productsAdmin" type="button" onclick="showAdminSection('productsAdmin')">📦 المنتجات</button>
+        <button class="nav-btn" data-section="storePreview" type="button" onclick="showAdminSection('storePreview')">👁️ معاينة المتجر</button>
+        <button class="nav-btn" data-section="telegramSettings" type="button" onclick="showAdminSection('telegramSettings')">🤖 تيليجرام</button>
       </nav>
 
       <div class="admin-note">
@@ -1138,9 +1203,12 @@
 
     <main class="admin-main">
       <header class="topbar">
-        <div>
-          <h2>لوحة المدير</h2>
-          <p style="color: var(--muted); font-size: .9rem;">هذا المكان خاص بك أنت فقط.</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="admin-menu-toggle" type="button" onclick="openAdminMenu()">☰</button>
+          <div>
+            <h2>لوحة المدير</h2>
+            <p style="color: var(--muted); font-size: .9rem;">اختر من القائمة: معلومات، أقسام، منتجات، معاينة.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
@@ -1152,7 +1220,7 @@
 
       <div class="admin-content">
 
-        <section id="storeInfoAdmin" class="card" style="margin-bottom: 18px;">
+        <section id="storeInfoAdmin" class="card admin-section active" style="margin-bottom: 18px;">
           <div class="card-head">
             <div>
               <h3>معلومات المتجر الأساسية</h3>
@@ -1195,7 +1263,7 @@
         </section>
 
 
-        <section id="categoriesAdmin" class="card" style="margin-bottom: 18px;">
+        <section id="categoriesAdmin" class="card admin-section" style="margin-bottom: 18px;">
           <div class="card-head">
             <div>
               <h3>إدارة الأقسام</h3>
@@ -1232,7 +1300,7 @@
           </div>
         </section>
 
-        <section id="productsAdmin" class="grid admin-grid">
+        <section id="productsAdmin" class="grid admin-grid admin-section">
           <div class="card">
             <div class="card-head">
               <div>
@@ -1297,7 +1365,7 @@
           </div>
         </section>
 
-        <section id="storePreview" class="card" style="margin-top: 18px;">
+        <section id="storePreview" class="card admin-section" style="margin-top: 18px;">
           <div class="card-head">
             <div>
               <h3>معاينة مباشرة لواجهة الزبون</h3>
@@ -1310,7 +1378,7 @@
           <iframe id="previewFrame" class="preview-frame" title="Store preview"></iframe>
         </section>
 
-        <section id="telegramSettings" class="card" style="margin-top: 18px;">
+        <section id="telegramSettings" class="card admin-section" style="margin-top: 18px;">
           <div class="card-head">
             <div>
               <h3>إعدادات Telegram Bot و Firebase</h3>
@@ -1383,8 +1451,8 @@
         <div class="container">
           <div class="section-head">
             <div class="section-title">
-              <h2>معلومات الزبون</h2>
-              <p>املأ البيانات ثم اضغط إرسال الطلب.</p>
+              <h2>معلومات الطلب</h2>
+              <p>البيانات اختيارية. تقدر تكتب اسم أو ملاحظة بسيطة فقط.</p>
             </div>
           </div>
 
@@ -1392,23 +1460,23 @@
             <form class="card" id="orderForm">
               <div class="form-grid">
                 <div class="field">
-                  <label for="customerName">الاسم</label>
-                  <input id="customerName" type="text" placeholder="مثال: أحمد علي" required />
+                  <label for="customerName">الاسم / اللقب اختياري</label>
+                  <input id="customerName" type="text" placeholder="مثال: أحمد علي أو أبو علي" />
                 </div>
 
                 <div class="field">
-                  <label for="customerPhone">رقم الهاتف</label>
-                  <input id="customerPhone" type="tel" placeholder="07xxxxxxxxx" required />
+                  <label for="customerPhone">رقم الهاتف اختياري</label>
+                  <input id="customerPhone" type="tel" placeholder="اختياري: 07xxxxxxxxx" />
                 </div>
 
                 <div class="field full">
-                  <label for="customerAddress">العنوان</label>
-                  <input id="customerAddress" type="text" placeholder="المحافظة / المنطقة / أقرب نقطة دالة" required />
+                  <label for="customerAddress">العنوان اختياري</label>
+                  <input id="customerAddress" type="text" placeholder="اختياري: المنطقة / أقرب نقطة دالة" />
                 </div>
 
                 <div class="field full">
-                  <label for="customerNotes">ملاحظات إضافية</label>
-                  <textarea id="customerNotes" placeholder="مثال: التوصيل مساءً، لون محدد، تفاصيل إضافية..."></textarea>
+                  <label for="customerNotes">ملاحظة بسيطة للطلب اختياري</label>
+                  <textarea id="customerNotes" placeholder="مثال: دز الطلب ويا فلان / أستلمه من المحل / لون محدد..."></textarea>
                 </div>
               </div>
 
@@ -1920,8 +1988,36 @@
       window.open(getPublicUrl(), "_blank");
     }
 
+    function openAdminMenu() {
+      document.getElementById("adminSidebar")?.classList.add("open");
+      document.getElementById("adminDrawerOverlay")?.classList.add("active");
+    }
+
+    function closeAdminMenu() {
+      document.getElementById("adminSidebar")?.classList.remove("open");
+      document.getElementById("adminDrawerOverlay")?.classList.remove("active");
+    }
+
+    function showAdminSection(id) {
+      document.querySelectorAll(".admin-section").forEach(section => {
+        section.classList.remove("active");
+      });
+
+      document.getElementById(id)?.classList.add("active");
+
+      document.querySelectorAll(".nav-btn").forEach(button => {
+        button.classList.toggle("active", button.dataset.section === id);
+      });
+
+      closeAdminMenu();
+
+      if (id === "storePreview") {
+        renderPreview();
+      }
+    }
+
     function scrollToAdminSection(id) {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      showAdminSection(id);
     }
 
     /* Admin */
@@ -2068,6 +2164,7 @@
 
       renderAdminProducts();
       renderPreview();
+      showAdminSection("storeInfoAdmin");
     }
 
 
@@ -2438,9 +2535,9 @@
       return `
 🛒 طلب جديد من الموقع
 
-👤 اسم الزبون: ${customer.name}
-📞 الرقم: ${customer.phone}
-📍 العنوان: ${customer.address}
+👤 الاسم: ${customer.name || "غير مذكور"}
+📞 الرقم: ${customer.phone || "غير مذكور"}
+📍 العنوان: ${customer.address || "غير مذكور"}
 
 🧾 المنتجات:
 ${itemsText}
@@ -2519,6 +2616,9 @@ ${customer.notes || "لا توجد ملاحظات"}
 
     Object.assign(window, {
       scrollToAdminSection,
+      openAdminMenu,
+      closeAdminMenu,
+      showAdminSection,
       copyPublicLink,
       openPublicStore,
       renderPreview,
