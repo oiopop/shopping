@@ -1990,8 +1990,8 @@
     const db = getFirestore(app);
     const PRODUCTS_COLLECTION = "products";
     const CATEGORIES_COLLECTION = "categories";
-    const STORE_SETTINGS_COLLECTION = "settings";
-    const STORE_SETTINGS_DOC = "storeInfo";
+    const STORE_SETTINGS_COLLECTION = PRODUCTS_COLLECTION;
+    const STORE_SETTINGS_DOC = "__store_info__";
 
     /*
       ================================
@@ -2338,7 +2338,9 @@
       onSnapshot(
         collection(db, PRODUCTS_COLLECTION),
         async (snapshot) => {
-          if (snapshot.empty) {
+          const productDocs = snapshot.docs.filter(item => !String(item.id).startsWith("__"));
+
+          if (productDocs.length === 0) {
             products = [];
             firebaseProductsLoaded = true;
             saveProducts();
@@ -2354,7 +2356,7 @@
             return;
           }
 
-          products = snapshot.docs
+          products = productDocs
             .map(item => ({ categoryId: "general", id: Number(item.id) || item.id, ...item.data() }))
             .sort((a, b) => Number(b.id) - Number(a.id));
 
@@ -2748,7 +2750,7 @@
 
       try {
         const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
-        await Promise.all(snapshot.docs.map(item => deleteDoc(doc(db, PRODUCTS_COLLECTION, item.id))));
+        await Promise.all(snapshot.docs.filter(item => !String(item.id).startsWith("__")).map(item => deleteDoc(doc(db, PRODUCTS_COLLECTION, item.id))));
 
         products = [];
         cart = [];
