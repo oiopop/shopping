@@ -3102,32 +3102,61 @@
     function buildTelegramMessage(customer) {
       const receiptCode = generateReceiptCode("HSN");
       const receiptDateTime = getReceiptDateTime();
+      const storeName = (storeInfo && storeInfo.name) ? storeInfo.name : "أسواق حسن";
+      const storeLocation = (storeInfo && storeInfo.location) ? storeInfo.location : "غير محدد";
+      const storePhone = (storeInfo && storeInfo.phone) ? storeInfo.phone : "غير محدد";
 
       const itemsText = cart.map((item, index) => {
-        return `${index + 1}) ${item.name}
+        return `${index + 1}. ${item.name}
    الكمية: ${item.quantity}
    السعر: ${formatPrice(item.price)}
    المجموع: ${formatPrice(Number(item.price) * item.quantity)}`;
       }).join("\n\n");
 
       return `
-🛒 طلب جديد من الموقع
+╔══════════════════════╗
+        🧾 وصل طلب جديد
+        ${storeName}
+╚══════════════════════╝
 
-🧾 رمز الوصل: ${receiptCode}
-📅 تاريخ الوصل: ${receiptDateTime.date}
-⏰ وقت الوصل: ${receiptDateTime.time}
+رقم الوصل:
+${receiptCode}
 
-👤 الاسم: ${customer.name || "غير مذكور"}
-📞 الرقم: ${customer.phone || "غير مذكور"}
-📍 العنوان: ${customer.address || "غير مذكور"}
+التاريخ:
+${receiptDateTime.date}
 
-🧾 المنتجات:
+الوقت:
+${receiptDateTime.time}
+
+────────────────────
+
+بيانات الزبون:
+الاسم: ${customer.name || "غير مذكور"}
+الهاتف: ${customer.phone || "غير مذكور"}
+العنوان: ${customer.address || "غير مذكور"}
+
+────────────────────
+
+قائمة المنتجات:
 ${itemsText}
 
-💰 المجموع النهائي: ${formatPrice(getCartTotal())}
+────────────────────
 
-📝 ملاحظات:
+المجموع النهائي:
+▣ ${formatPrice(getCartTotal())}
+
+────────────────────
+
+ملاحظات الزبون:
 ${customer.notes || "لا توجد ملاحظات"}
+
+────────────────────
+
+معلومات المتجر:
+الموقع: ${storeLocation}
+الهاتف: ${storePhone}
+
+شكراً لطلبكم من ${storeName}
       `.trim();
     }
 
@@ -3155,19 +3184,38 @@ ${customer.notes || "لا توجد ملاحظات"}
     function buildSuggestionMessage(data) {
       const receiptCode = generateReceiptCode("SUG");
       const receiptDateTime = getReceiptDateTime();
+      const storeName = (storeInfo && storeInfo.name) ? storeInfo.name : "أسواق حسن";
 
       return `
-💡 اقتراح من الزبون
+╔══════════════════════╗
+       💡 اقتراح زبون
+        ${storeName}
+╚══════════════════════╝
 
-🧾 رمز الاقتراح: ${receiptCode}
-📅 التاريخ: ${receiptDateTime.date}
-⏰ الوقت: ${receiptDateTime.time}
+رمز الاقتراح:
+${receiptCode}
 
-👤 الاسم: ${data.name || "غير مذكور"}
-📞 الرقم: ${data.phone || "غير مذكور"}
+التاريخ:
+${receiptDateTime.date}
 
-📝 الاقتراح / الملاحظة:
+الوقت:
+${receiptDateTime.time}
+
+────────────────────
+
+بيانات الزبون:
+الاسم: ${data.name || "غير مذكور"}
+الهاتف: ${data.phone || "غير مذكور"}
+
+────────────────────
+
+الاقتراح / المنتج المطلوب:
 ${data.text}
+
+────────────────────
+
+ملاحظة:
+الزبون لم يجد هذا المنتج أو يريد إضافته للمتجر.
       `.trim();
     }
 
