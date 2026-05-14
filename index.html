@@ -636,8 +636,8 @@
 
     .products-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
 
     .product-card {
@@ -657,7 +657,7 @@
 
     .product-img {
       position: relative;
-      height: 220px;
+      height: 160px;
       background: var(--soft);
       overflow: hidden;
     }
@@ -1201,7 +1201,7 @@
     }
 
     .product-img {
-      height: 235px;
+      height: 160px;
     }
 
     .product-body {
@@ -1321,11 +1321,11 @@
       }
 
       .products-grid {
-        gap: 14px;
+        gap: 8px;
       }
 
       .product-img {
-        height: 210px;
+        height: 130px;
       }
 
       .product-actions {
@@ -1418,7 +1418,7 @@
 
 
     .products-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -1567,6 +1567,53 @@
         display: none;
       }
     }
+    /* ── Compact 2-col card ── */
+    .product-body {
+      padding: 10px 11px 13px;
+    }
+    .product-title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+    .product-title-row h3 {
+      font-size: 0.86rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      width: 100%;
+    }
+    .price {
+      font-size: 0.92rem;
+    }
+    .desc {
+      font-size: 0.8rem;
+      min-height: unset;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .product-actions {
+      flex-direction: column;
+      gap: 7px;
+    }
+    .qty-control {
+      width: 100%;
+      justify-content: center;
+      min-height: 40px;
+    }
+    .qty-btn { width: 32px; height: 32px; }
+    .add-btn {
+      width: 100%;
+      min-height: 40px;
+      font-size: 0.88rem;
+    }
+
   </style>
 </head>
 
